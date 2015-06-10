@@ -6,7 +6,7 @@ This project was created to support SSO functionality in SonisWeb without modifi
 # Requirements
 PHP 5.4+
 
-freetds or pdo
+freetds/pdo or sqlserver driver for PHP
 
 CAS SSO with Attribute Release
 
@@ -14,9 +14,9 @@ CAS SSO with Attribute Release
 
 Copy project to a web directory, set cas URL and set database settings. Change attributes to match your environment
 
-You can either add a new <Directory> to CAS or add to your SonisWeb Server.
+You can either add a new Directory to your CAS web server or add to your SonisWeb Server.
 
-Change CACert.pem to match your CAS SSL Certificate CA
+Change CACert.pem to match your CAS Certificate CA
 
 Change Login links for Student sections to point to https://urltoserver/SSO/ssoPing.php
 
