@@ -62,11 +62,10 @@ if (!$con)
 //Select Database
 mssql_select_db($database, $con);
 
-//Build and Execute Query, Adjust pin and soc_sec as needed, default for Sonis
+//Build and Execute Query
 $sql = "SELECT pin FROM name WHERE soc_sec = '$user'";
 
-//Grab Result
-list($pinpass) = mssql_fetch_row(mssql_query($sql));
+list($count) = mssql_fetch_row(mssql_query($sql));
 
 if (!mssql_query($sql,$con))
   {
@@ -81,7 +80,7 @@ mssql_close($con)
 <div id="postForm">
    <form action="https://sonisweburl/studsect.cfm?auth=1" method="post" id="preSSO" >
    <input type="hidden" name="SOC_SEC" value="<?PHP echo $user;?>" />
-   <input type="hidden" name="PIN" value="<?PHP echo $pinpass;?>" />
+   <input type="hidden" name="PIN" value="<?PHP echo $count;?>" />
    <input type="submit" style="display:none;"/>
    </form>
 </div>

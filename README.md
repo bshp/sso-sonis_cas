@@ -1,5 +1,5 @@
 # CAS Auth for SonisWeb
-Use CAS SSO for SonisWeb
+Use CAS SSO for Students in SonisWeb
 
 This project was created to support SSO functionality in SonisWeb without modification to any directory or database.
 
