@@ -8,15 +8,13 @@ PHP 5.4+
 
 Freetds mssql driver for PHP
 
-CAS SSO with Attribute Release
+LDAP IDs in SonisWeb for Faculty/Staff/Students
 
 #Installtion
 
 Copy project to a Sonisweb directory, rename to "auth"
 
 Set Database,CAS URL, SonisWeb URLs and Client Cookie in config.php
-
-Edit ./students/ssoPing.php phpCAS Attribute to match your Students ID attribute
 
 Change CACert.pem to match your CAS Certificate CA
 

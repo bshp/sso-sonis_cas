@@ -44,26 +44,23 @@ phpCAS::setNoCasServerValidation();
 // force CAS authentication
 phpCAS::forceAuthentication();
 
-//Get User Attribute for lookup
-$user = phpCAS::getAttribute('employeeID');
+//Get Attribute, Change this to match your Student ID Attribute
+$user = phpCAS::getUser();
 
-//Build and Execute Query
-$sql = "SELECT pin FROM name WHERE soc_sec = '$user'";
+//Build and Execute Query, Adjust pin and soc_sec as needed, default for Sonis
+$query = mssql_query("SELECT soc_sec,pin FROM name WHERE ldap_id = '$user'");
 
-list($count) = mssql_fetch_row(mssql_query($sql));
+//Grab Result
+$row = mssql_fetch_row($query);
 
-if (!mssql_query($sql,$con))
-    {
-        die('Error during operation');
-    }
- 
+//Close Connection
 mssql_close($con)
 
 ?>
 <div id="postForm">
    <form action="<?PHP echo $studentURL;?>" method="post" id="preSSO" >
-   <input type="hidden" name="SOC_SEC" value="<?PHP echo $user;?>" />
-   <input type="hidden" name="PIN" value="<?PHP echo $count;?>" />
+   <input type="hidden" name="SOC_SEC" value="<?PHP echo $row[0];?>" />
+   <input type="hidden" name="PIN" value="<?PHP echo $row[1];?>" />
    <input type="submit" style="display:none;"/>
    </form>
 </div>
