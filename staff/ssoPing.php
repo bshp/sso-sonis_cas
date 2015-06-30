@@ -26,51 +26,34 @@
 
 <?php
 // Load the settings from config file
-require_once 'config.php';
+require_once '../config.php';
 
 // Load the CAS lib
-require_once $phpcas_path . 'CAS.php';
+require_once '../cas/CAS.php';
 
 // Enable debugging
-//phpCAS::setDebug();
+//phpCAS::setDebug('C:/inetpub/logs/php/phpcas.log');
 
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 
 // For production use set the CA certificate
-phpCAS::setCasServerCACert($cas_server_ca_cert_path);
+//phpCAS::setCasServerCACert(../CACert.pem);
+phpCAS::setNoCasServerValidation();
+
+phpCAS::handleLogoutRequests();
 
 // Force CAS authentication
 phpCAS::forceAuthentication();
 
 //Get Attribute, Change this to match your Student ID Attribute
-$user = phpCAS::getAttribute('studentIDAttribute');
+$user = phpCAS::getUser();
 
-//Database Details
-$server = 'SERVER';
-$username = 'USERNAME';
-$password = 'PASSWORD';
-$database = 'DATABASE';
+//Build and Execute Query, Adjust pin and soc_sec as needed, default for Sonis
+$query = mssql_query("SELECT user_id,password FROM security WHERE ldap_id = '$user'");
 
-//Test Connection
-$con= mssql_connect($server, $username, $password);
-if (!$con)
-  {
-  die('Could not connect: ' . mssql_error());
-  }
-
-//Select Database
-mssql_select_db($database, $con);
-
-//Build and Execute Query
-$sql = "SELECT pin FROM name WHERE soc_sec = '$user'";
-
-list($count) = mssql_fetch_row(mssql_query($sql));
-
-if (!mssql_query($sql,$con))
-  {
-  die('Error: ' . mssql_error());
-  }
+//Grab Result
+$row = mssql_fetch_row($query);
 
 //Close Connection
 mssql_close($con)
@@ -78,21 +61,21 @@ mssql_close($con)
 ?>
 
 <div id="postForm">
-   <form action="https://sonisweburl/studsect.cfm?auth=1" method="post" id="preSSO" >
-   <input type="hidden" name="SOC_SEC" value="<?PHP echo $user;?>" />
-   <input type="hidden" name="PIN" value="<?PHP echo $count;?>" />
+   <form action="<?PHP echo $staffURL;?>" method="post" id="preSSO" >
+   <input type="hidden" name="USER_ID" value="<?PHP echo $row[0];?>" />
+   <input type="hidden" name="PASSWORD" value="<?PHP echo $row[1];?>" />
    <input type="submit" style="display:none;"/>
    </form>
 </div>
 <div id="notice">
-   <p style="font-size:2em;" >Please wait while you are signed in......</p>
+   <p style="font-size:1.5em;" >Please wait while you are signed in......</p>
 </div>
 </body>
 <script type="text/javascript">
-    function postSSO () {
+    function myfunc () {
         var frm = document.getElementById("preSSO");
         frm.submit();
     }
-    window.onload = postSSO;
+    window.onload = myfunc;
 </script>
 </html>

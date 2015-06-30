@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The purpose of this central config file is configuring all examples
+ * The purpose of this central config file is configuring all
  * in one place with minimal work for your working environment
  * Just configure all the items in this config according to your environment
  * and rename the file to config.php
@@ -17,7 +17,37 @@
  * @link     https://wiki.jasig.org/display/CASC/phpCAS
  */
 
-$phpcas_path = './auth/';
+//////////////////////////////////////
+// Global SQL Server Config //////////
+//////////////////////////////////////
+$server = 'SERVER';
+$username = 'USER';
+$password = 'PASSWORD';
+$database = 'DATABASE';
+$con= mssql_connect($server, $username, $password);
+if (!$con)
+{
+    die('Could not connect to SQL Server');
+}
+
+///////////////////////////////////////
+// Select Database ////////////////////
+///////////////////////////////////////
+mssql_select_db($database, $con);
+
+///////////////////////////////////////
+// SonisWeb URLS //////////////////////
+///////////////////////////////////////
+
+$facultyURL = 'https://sonisweburl/facsect.cfm?auth=1';
+$staffURL = 'https://sonisweburl/LoginProc.cfm';
+$studentURL = 'https://sonisweburl/studsect.cfm?auth=1';
+
+///////////////////////////////////////
+///// PHP CAS Path ////////////////////
+///////////////////////////////////////
+
+$phpcas_path = './cas/CAS/';
 
 ///////////////////////////////////////
 // Basic Config of the phpCAS client //
@@ -44,8 +74,8 @@ $cas_server_ca_cert_path = 'CACert.pem';
 $cas_real_hosts = array('cas-real-1.example.com', 'cas-real-2.example.com');
 
 // Client config for cookie hardening
-$client_domain = 'example.com';
-$client_path = 'SSO';
+$client_domain = 'sonisweb.example.com';
+$client_path = '/auth/';
 $client_secure = true;
 $client_httpOnly = true;
 $client_lifetime = 0;

@@ -6,20 +6,50 @@ This project was created to support SSO functionality in SonisWeb without modifi
 # Requirements
 PHP 5.4+
 
-freetds/pdo or sqlserver driver for PHP
+Freetds mssql driver for PHP
 
 CAS SSO with Attribute Release
 
 #Installtion
 
-Copy project to a web directory, set cas URL and set database settings. Change attributes to match your environment
+Copy project to a Sonisweb directory, rename to "auth"
 
-You can either add a new Directory to your CAS web server or add to your SonisWeb Server.
+Set Database,CAS URL, SonisWeb URLs and Client Cookie in config.php
+
+Edit ./students/ssoPing.php phpCAS Attribute to match your Students ID attribute
 
 Change CACert.pem to match your CAS Certificate CA
 
-Change Login links for Student sections to point to https://urltoserver/SSO/ssoPing.php
+Change Login links for Student sections to point to https://sonisweb.example.com/auth/staff , faculty, or students
 
-OR 
+You can also set the following IIS Rewrite rules to redirect to CAS immediately, notice we do not want to rewrite if a query string is appended.
 
-Use a URL rewrite rule in IIS to rewrite studsect.cfm to ssoPing.php
+<rewrite>
+	<rules>
+		<clear />
+		<rule name="Redirect Admin Logins" enabled="true" patternSyntax="ECMAScript" stopProcessing="true">
+			<match url="(.*)" />
+				<conditions logicalGrouping="MatchAll" trackAllCaptures="false">
+					<add input="{QUERY_STRING}" pattern="auth=1" negate="true" />
+					<add input="{REQUEST_URI}" pattern="^/admnsect\.cfm" />
+				</conditions>
+			<action type="Redirect" url="https://sonisweb.example.com/auth/staff" redirectType="Temporary" />
+		</rule>
+		<rule name="Redirect Faculty Logins" enabled="true" patternSyntax="ECMAScript" stopProcessing="true">
+			<match url="(.*)" />
+				<conditions logicalGrouping="MatchAll" trackAllCaptures="false">
+					<add input="{QUERY_STRING}" pattern="auth=1" negate="true" />
+					<add input="{REQUEST_URI}" pattern="^/facsect\.cfm" />
+				</conditions>
+			<action type="Redirect" url="https://sonisweb.example.com/auth/faculty" redirectType="Temporary" />
+		</rule>
+		<rule name="Redirect Student Logins" enabled="true" patternSyntax="ECMAScript" stopProcessing="true">
+			<match url="(.*)" />
+				<conditions logicalGrouping="MatchAll" trackAllCaptures="false">
+					<add input="{QUERY_STRING}" pattern="auth=1" negate="true" />
+					<add input="{REQUEST_URI}" pattern="^/studsect\.cfm" />
+				</conditions>
+			<action type="Redirect" url="https://sonisweb.example.com/auth/students" redirectType="Temporary" />
+		</rule>
+	</rules>
+</rewrite>
