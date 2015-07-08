@@ -125,10 +125,10 @@ $cas_url = $cas_url . $cas_context;
 // Set the session-name to be unique to the current script so that the client script
 // doesn't share its session with a proxied script.
 // This is just useful when running the example code, but not normally.
-session_name(
-    'session_for:'
-    . preg_replace('/[^a-z0-9-]/i', '_', basename($_SERVER['SCRIPT_NAME']))
-);
+//session_name(
+//    'session_for:'
+//    . preg_replace('/[^a-z0-9-]/i', '_', basename($_SERVER['SCRIPT_NAME']))
+//);
 // Set an UTF-8 encoding header for internation characters (User attributes)
 header('Content-Type: text/html; charset=utf-8');
 ?>

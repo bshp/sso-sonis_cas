@@ -39,9 +39,6 @@ $backurl = 'https%3A%2F%2Fsoniweb.example.com%2Fauth%2F';
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 
-// Ensure Session Cookie is Destroyed
-setcookie('session_for%3AssoPing_php', null, -1, '/');
-
 // CAS Logout
 phpCAS::logoutWithRedirectService($backurl);
 
