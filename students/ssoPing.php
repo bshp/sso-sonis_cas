@@ -69,10 +69,10 @@ mssql_close($con)
 </div>
 </body>
 <script type="text/javascript">
-    function myfunc () {
+    function postSSOForm () {
         var frm = document.getElementById("preSSO");
         frm.submit();
     }
-    window.onload = myfunc;
+    window.onload = postSSOForm;
 </script>
 </html>
