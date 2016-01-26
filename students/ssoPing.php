@@ -75,3 +75,27 @@ $stmt->close();
     window.onload = postSSOForm;
 </script>
 </html>
+
+$name = $_GET['username'];
+ 
+if ($stmt = $mysqli->prepare("SELECT password FROM tbl_users WHERE name=?")) {
+ 
+    // Bind a variable to the parameter as a string. 
+    $stmt->bind_param("s", $name);
+ 
+    // Execute the statement.
+    $stmt->execute();
+ 
+    // Get the variables from the query.
+    $stmt->bind_result($pass);
+ 
+    // Fetch the data.
+    $stmt->fetch();
+ 
+    // Display the data.
+    printf("Password for user %s is %s\n", $name, $pass);
+ 
+    // Close the prepared statement.
+    $stmt->close();
+ 
+}
