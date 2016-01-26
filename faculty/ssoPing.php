@@ -54,7 +54,7 @@ $query = mssql_query("SELECT soc_sec,pin FROM name WHERE ldap_id = '$user'");
 $row = mssql_fetch_row($query);
 
 //Close Connection
-mssql_close($con)
+mssql_close($con);
 
 ?>
 

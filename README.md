@@ -1,7 +1,7 @@
 # CAS Auth for SonisWeb
 Use CAS SSO for Students in SonisWeb
 
-This project was created to support SSO functionality in SonisWeb without modification to any directory or database.
+This project was created to support SSO functionality in SonisWeb without modification to any directory or database. This is meant to be a starting point so that you can get an idea of how easily you could connect an SSO system to Sonis.
 
 # Requirements
 PHP 5.4+

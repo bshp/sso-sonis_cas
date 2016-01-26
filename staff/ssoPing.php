@@ -56,7 +56,7 @@ $query = mssql_query("SELECT user_id,password FROM security WHERE ldap_id = '$us
 $row = mssql_fetch_row($query);
 
 //Close Connection
-mssql_close($con)
+mssql_close($con);
 
 ?>
 
