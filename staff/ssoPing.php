@@ -49,21 +49,20 @@ phpCAS::forceAuthentication();
 //Get Attribute, Change this to match your Student ID Attribute
 $user = phpCAS::getUser();
 
-//Build and Execute Query, Adjust pin and soc_sec as needed, default for Sonis
-$query = mssql_query("SELECT user_id,password FROM security WHERE ldap_id = '$user'");
-
-//Grab Result
-$row = mssql_fetch_row($query);
-
-//Close Connection
-mssql_close($con)
+//Prepared Statement
+$stmt = $con->prepare("SELECT user_id,password FROM security WHERE ldap_id = ?");
+$stmt->bind_param("s", $user);
+$stmt->execute();
+$stmt->bind_result($id, $pass);
+$stmt->fetch();
+$stmt->close();
 
 ?>
 
 <div id="postForm">
    <form action="<?PHP echo $staffURL;?>" method="post" id="preSSO" >
-   <input type="hidden" name="USER_ID" value="<?PHP echo $row[0];?>" />
-   <input type="hidden" name="PASSWORD" value="<?PHP echo $row[1];?>" />
+   <input type="hidden" name="USER_ID" value="<?PHP echo $id;?>" />
+   <input type="hidden" name="PASSWORD" value="<?PHP echo $pass;?>" />
    <input type="submit" style="display:none;"/>
    </form>
 </div>
