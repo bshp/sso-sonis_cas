@@ -26,14 +26,6 @@ $dbpwd = 'PASSWORD';
 $pdo = new PDO("dblib:host=1.1.1.1;dbname=$dbname", "$dbuser","$dbpwd");
 
 ///////////////////////////////////////
-// SonisWeb URLS //////////////////////
-///////////////////////////////////////
-
-$facultyURL = 'https://sonisweburl/facsect.cfm?auth=1';
-$staffURL = 'https://sonisweburl/LoginProc.cfm';
-$studentURL = 'https://sonisweburl/studsect.cfm?auth=1';
-
-///////////////////////////////////////
 ///// PHP CAS Path ////////////////////
 ///////////////////////////////////////
 

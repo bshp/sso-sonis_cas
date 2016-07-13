@@ -34,6 +34,9 @@ require_once './cas/CAS.php';
 // Enable debugging
 //phpCAS::setDebug();
 
+//phpCAS Cookie
+session_set_cookie_params($client_lifetime, $client_path, $client_domain, $client_secure, $client_httpOnly);
+
 // Initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 
@@ -71,19 +74,19 @@ else if ($affiliation == 'staff') {
 <?php
 if ($affiliation == 'student') {
     ?>
-        <form action="<?PHP echo $studentURL; ?>" method="post" id="preSSO">
+        <form action="https://sonisweburl/studsect.cfm?auth=1" method="post" id="preSSO">
             <input type="hidden" name="SOC_SEC" value="<?PHP echo $userid; ?>"/>
             <input type="hidden" name="PIN" value="<?PHP echo $pinpass; ?>"/>
 <?php
 } else if ($affiliation == 'faculty') {
     ?>
-        <form action="<?PHP echo $facultyURL; ?>" method="post" id="preSSO">
+        <form action="https://sonisweburl/facsect.cfm?auth=1" method="post" id="preSSO">
             <input type="hidden" name="SOC_SEC" value="<?PHP echo $userid; ?>"/>
             <input type="hidden" name="PIN" value="<?PHP echo $pinpass; ?>"/>
 <?php
 } else if ($affiliation == 'staff') {
     ?>
-        <form action="<?PHP echo $staffURL; ?>" method="post" id="preSSO">
+        <form action="https://sonisweburl/LoginProc.cfm" method="post" id="preSSO">
             <input type="hidden" name="USER_ID" value="<?PHP echo $userid; ?>"/>
             <input type="hidden" name="PASSWORD" value="<?PHP echo $pinpass; ?>"/>
 <?php

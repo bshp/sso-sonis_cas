@@ -25,13 +25,13 @@
 <body>
 <?php
 // Load the settings from config file
-require_once 'config.php';
+require_once 'config.all.php';
 
 // Load the CAS lib
 require_once './cas/CAS.php';
 
 // URL for logout
-$backurl = 'https%3A%2F%2Fsoniweb.example.com%2Fauth%2F';
+$backurl = 'https://sonisweb.example.com';
 
 // Enable debugging
 //phpCAS::setDebug();
