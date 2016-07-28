@@ -1,30 +1,30 @@
 <html>
-<!--
-   Copyright 2015 Jason A. Everling
-
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
--->
-<!--
-
-    For Connecting CAS SSO to SonisWeb
-    Using phpCAS to pass attributes to script
-
-    By: Jason A. Everling
-    Email: jeverling@bshp.edu
--->
 <body>
-
 <?php
+//
+//   Copyright 2015 Jason A. Everling
+//
+//   Licensed under the Apache License, Version 2.0 (the "License");
+//   you may not use this file except in compliance with the License.
+//   You may obtain a copy of the License at
+//
+//       http://www.apache.org/licenses/LICENSE-2.0
+//
+//   Unless required by applicable law or agreed to in writing, software
+//   distributed under the License is distributed on an "AS IS" BASIS,
+//   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//   See the License for the specific language governing permissions and
+//   limitations under the License.
+//
+//
+//
+//    For Connecting CAS SSO to SonisWeb
+//    Using phpCAS to pass attributes to script
+//
+//    By: Jason A. Everling
+//    Email: jeverling@bshp.edu
+//
+
 // Load the settings from config file
 require_once 'config.all.php';
 
@@ -69,29 +69,34 @@ else if ($affiliation == 'staff') {
     $userid = $row['user_id'];
     $pinpass = $row['password'];
 }
+else {
+    echo "No Access";
+}
 ?>
 <div id="postForm">
+    <form action="../../cas_login_chk.cfm" method="post" id="preSSO">
 <?php
 if ($affiliation == 'student') {
     ?>
-        <form action="https://sonisweburl/studsect.cfm?auth=1" method="post" id="preSSO">
-            <input type="hidden" name="SOC_SEC" value="<?PHP echo $userid; ?>"/>
-            <input type="hidden" name="PIN" value="<?PHP echo $pinpass; ?>"/>
+            <input type="hidden" name ="modstat" value="ST"/>
 <?php
 } else if ($affiliation == 'faculty') {
     ?>
-        <form action="https://sonisweburl/facsect.cfm?auth=1" method="post" id="preSSO">
-            <input type="hidden" name="SOC_SEC" value="<?PHP echo $userid; ?>"/>
-            <input type="hidden" name="PIN" value="<?PHP echo $pinpass; ?>"/>
+            <input type="hidden" name ="modstat" value="FA"/>
+
 <?php
 } else if ($affiliation == 'staff') {
     ?>
-        <form action="https://sonisweburl/LoginProc.cfm" method="post" id="preSSO">
-            <input type="hidden" name="USER_ID" value="<?PHP echo $userid; ?>"/>
-            <input type="hidden" name="PASSWORD" value="<?PHP echo $pinpass; ?>"/>
+            <input type="hidden" name ="modstat" value="ADMN"/>
+<?php
+} else {
+    ?>
+        <p>No Access Rights Found, Please Contact Tech Support</p>
 <?php
 }
 ?>
+            <input type="hidden" name="PID" value="<?PHP echo $userid;?>" />
+            <input type="hidden" name="PIN" value="<?PHP echo $pinpass;?>" />
             <input type="submit" style="display:none;"/>
         </form>
 </div>

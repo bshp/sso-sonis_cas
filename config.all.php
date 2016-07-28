@@ -23,7 +23,7 @@
 $dbname = 'DATABASE';
 $dbuser = 'USER';
 $dbpwd = 'PASSWORD';
-$pdo = new PDO("dblib:host=1.1.1.1;dbname=$dbname", "$dbuser","$dbpwd");
+$pdo = new PDO("dblib:host=10.10.10.10;dbname=$dbname", "$dbuser","$dbpwd");
 
 ///////////////////////////////////////
 ///// PHP CAS Path ////////////////////
