@@ -26,7 +26,7 @@
 //
 
 // Load the settings from config file
-require_once 'config.all.php';
+require_once 'config.php';
 
 // Load the CAS lib
 require_once './cas/CAS.php';
@@ -74,7 +74,7 @@ else {
 }
 ?>
 <div id="postForm">
-    <form action="../../cas_login_chk.cfm" method="post" id="preSSO">
+    <form action="../cas_login_chk.cfm" method="post" id="preSSO">
 <?php
 if ($affiliation == 'student') {
     ?>
