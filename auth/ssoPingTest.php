@@ -72,20 +72,25 @@ if ($affiliation == 'staff') {
 if ($affiliation == 'student') {
     $modstat = 'ST';
 }
-if ($status == '0') {
 ?>
 <html>
+<head>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
 <body>
+<?php
+if ($status == '0') {
+?>
     <div id="postForm">
         <form action="../cas_login_chk.cfm" method="post" id="preSSO" name="preSSOForm">
             <input type="hidden" name="modstat" value="<?PHP echo $modstat; ?>"/>
             <input type="hidden" name="PID" value="<?PHP echo $userid; ?>"/>
             <input type="hidden" name="PIN" value="<?PHP echo $pinpass; ?>"/>
-            <input type="submit" style="display:none;"/>
+            <input type="submit"/>
         </form>
     </div>
     <div id="notice">
-        <p style="font-size:1.5em;">Please wait while you are signed in......</p>
+        <p>Please wait while you are signed in......</p>
     </div>
     <script type="text/javascript">
         document.preSSOForm.submit();
@@ -94,7 +99,7 @@ if ($status == '0') {
 } else {
 ?>
     <div id="notice">
-        <p style="font-size:1.5em;">Your Sonis account is disabled, please <a href="https://support.bshp.edu">submit a ticket</a></p>
+        <p>Your Sonis account is disabled, please <a href="https://support.bshp.edu">submit a ticket</a></p>
     </div>
 <?php
 }
