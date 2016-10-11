@@ -1,0 +1,91 @@
+html {
+    background: #e5e2df;
+    background-image: url(../images/Background.png);
+    background-repeat: repeat-x;
+}
+
+body {
+    background-color: transparent;
+    font-family: Ubuntu, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #444;
+}
+
+label {
+    font-size: 14px;
+}
+
+.row{
+    margin-bottom: 20px;
+}
+
+#clear{
+    position: relative;
+    top: 7px;
+    left: 15px;
+}
+
+a:link {
+    color: #336699;
+}
+
+a:active {
+    color: #336699;
+}
+
+a:visited {
+    color: #336699;
+}
+
+a:hover {
+    color: #336699;
+    text-decoration: none;
+}
+
+#logout {
+    text-align: right;
+    padding-right: 15px;
+	padding-top: 25px;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+#logout a:link {
+    text-decoration: none;
+}
+
+#spacer{
+    height:15px;
+}
+
+#postForm input[type="submit"] {
+    display: none;
+}
+
+#choices {
+    width: 500px;
+    text-align: center;
+    margin: 100px auto;
+	background-color: rgb(255, 255, 255);
+	width: 500px;
+	height: 300px;
+	border-radius: 5px;
+	-webkit-box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, .25);
+    -moz-box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, .25);
+    box-shadow: 0px 1px 10px 0px rgba(0, 0, 0, .25);
+}
+
+#choicePostForm input[type="submit"] {
+    margin-right: 50px;
+}
+
+#profileForm {
+    padding-left: 50px;
+}
+
+#multiprofile p {
+	font-size: 16px;
+	padding-top: 100px;
+	padding-left: 15px;
+	padding-right: 15px;
+}

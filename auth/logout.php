@@ -24,10 +24,8 @@
 -->
 <body>
 <?php
-// Load the settings from config file
-require_once 'config.php';
 
-// Load the CAS lib
+require_once 'config.php';
 require_once './cas/CAS.php';
 
 $backurl = 'https://sonis.example.com/';
@@ -35,7 +33,6 @@ $backurl = 'https://sonis.example.com/';
 // Enable debugging
 //phpCAS::setDebug();
 
-// Initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 
 phpCAS::logoutWithRedirectService($backurl);

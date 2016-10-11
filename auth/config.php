@@ -20,10 +20,10 @@
 //////////////////////////////////////
 // Global SQL Server Config //////////
 //////////////////////////////////////
-$dbname = 'DATABASE';
-$dbuser = 'USER';
-$dbpwd = 'PASSWORD';
-$pdo = new PDO("dblib:host=10.10.10.10;dbname=$dbname", "$dbuser","$dbpwd");
+$database = 'DATABASE';
+$username = 'USER';
+$password = 'PASSWORD';
+$pdo = new PDO("sqlsrv:server=10.10.10.10,1433;database=$database", "$username","$password");
 
 ///////////////////////////////////////
 ///// PHP CAS Path ////////////////////
