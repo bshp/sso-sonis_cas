@@ -23,28 +23,23 @@
 //    Email: jeverling@bshp.edu
 //
 
-require './config.php';
-require './cas/CAS.php';
+require_once 'config.php';
+require_once './cas/CAS.php';
 include 'lib.php';
 
-// Enable debugging
+// CAS Stuff
 //phpCAS::setDebug();
-
 session_set_cookie_params($client_lifetime, $client_path, $client_domain, $client_secure, $client_httpOnly);
-//If using CAS v4+, set below 'CAS_VERSION_3_0'
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
-
-// For production use set the CA certificate
 //phpCAS::setCasServerCACert(./CACert.pem);
 phpCAS::setNoCasServerValidation();
-
 if (!phpCAS::isAuthenticated()) {
     phpCAS::forceAuthentication();
 }
-
+// Focus (User) Attributes
 $user = phpCAS::getUser();
 $affiliation = phpCAS::getAttribute('eduPersonAffiliation');
-$studentID = phpCAS::getAttribute('attribute');
+$bshpid = phpCAS::getAttribute('attribute');
 $focus = new ssoUser();
 
 ?>
@@ -61,8 +56,9 @@ if(isset($_POST['submit'])) {
     if ($_POST['submit'] == 'Staff') {
         $modchoice = 'ADMN';
     }
-$prefmodule = $focus->getChosenValues();
-?>
+//set preferred login for multi-role users
+    $prefmodule = $focus->getFocusChosenAttributes();
+    ?>
     <div id="postForm">
         <form action="../cas_login_chk.cfm" method="post" id="postSSOForm" name="postSSOForm">
             <input type="hidden" name="modstat" value="<?PHP echo $modchoice; ?>"/>
@@ -79,12 +75,13 @@ $prefmodule = $focus->getChosenValues();
     </script>
 <?php
 }
-$attributes = $focus->getStaticValues();
-$profiles = $focus->checkMulti();
+//Get user values
+$attributes = $focus->getFocusAttributes();
+$profiles = $focus->checkMultiProfiles();
 $module = $focus->getModStat();
 
 if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $profiles == false) {
-?>
+    ?>
     <div id="postForm">
         <form action="../cas_login_chk.cfm" method="post" id="preSSO" name="preSSOForm">
             <input type="hidden" name="modstat" value="<?PHP echo $module; ?>"/>
@@ -101,16 +98,16 @@ if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $
     </script>
 <?php
 } else if (!isset($_POST['submit']) && $attributes['status'] == '1') {
-?>
+    ?>
     <div id="notice">
-        <p>Your account has been locked for your own security, please <a href="https://support.domain.edu">submit a ticket to have it unlocked.</a></p>
+        <p>Your account has been locked for your own security, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
     </div>
 <?php
 } else if (!isset($_POST['submit']) && $profiles == true) {
-?>
+    ?>
     <div id="choices">
         <div id="multiprofile">
-            <p>You have multiple profiles, please choose the profile you wish to login as.</p>
+            <p>You have multiple profiles,<br>Select the profile you wish to login as.</p>
         </div>
         <div id="choicePostForm">
             <form action="" method="post" id="profileForm" name="profileForm">
@@ -121,12 +118,13 @@ if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $
     </div>
 <?php
 } else {
-?>
+    ?>
     <div id="notice">
-        <p>Unable to determine your status, please <a href="https://support.domain.edu">submit a ticket</a></p>
+        <p>Unable to determine your status, please <a href="https://support.bshp.edu">submit a ticket</a></p>
     </div>
 <?php
 }
 ?>
+
 </body>
 </html>

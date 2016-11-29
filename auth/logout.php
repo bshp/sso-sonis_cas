@@ -28,19 +28,16 @@
 require_once 'config.php';
 require_once './cas/CAS.php';
 
-$backurl = 'https://sonis.example.com/';
+$backurl = 'https://sonis.example.edu';
 
 // Enable debugging
 //phpCAS::setDebug();
-
+// Initialize phpCAS
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 
 phpCAS::logoutWithRedirectService($backurl);
 
 exit();
-
-
-
 ?>
 </body>
 </html>

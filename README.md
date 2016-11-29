@@ -18,6 +18,6 @@ Set Database,CAS URL in config.php
 
 Change CACert.pem to match your CAS Certificate CA
 
-Change Login links for Student sections to point to https://sonisweb.example.com/auth/staff , faculty, or students
+Change Login links for Student sections to point to https://sonisweb.example.com/auth
 
 You can also set the following IIS Rewrite rules in the rewrite.config file to redirect to CAS immediately, notice we do not want to rewrite if a query string is appended.
