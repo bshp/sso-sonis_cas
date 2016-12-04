@@ -33,6 +33,8 @@ session_set_cookie_params($client_lifetime, $client_path, $client_domain, $clien
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
 //phpCAS::setCasServerCACert(./CACert.pem);
 phpCAS::setNoCasServerValidation();
+//Single Logout from CAS, set $cas_real_hosts in config.php
+//phpCAS::handleLogoutRequests(true, $cas_real_hosts);
 if (!phpCAS::isAuthenticated()) {
     phpCAS::forceAuthentication();
 }
