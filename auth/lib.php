@@ -33,13 +33,13 @@ class ssoUser
         global $pdo, $user, $affiliation, $bshpid;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
             if ($affiliation == 'faculty') {
-                $stmt = $pdo->prepare("SELECT soc_sec, disabled, pin FROM name WHERE ldap_id = ?");
+                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin, nmmodst.mod_stat FROM name INNER JOIN nmmodst ON name.soc_sec = nmmodst.soc_sec WHERE name.ldap_id = ?");
             }
             if ($affiliation == 'staff') {
                 $stmt = $pdo->prepare("SELECT user_id, disabled, password FROM security WHERE ldap_id = ?");
             }
             if ($affiliation == 'student') {
-                $stmt = $pdo->prepare("SELECT soc_sec, disabled, pin FROM name WHERE soc_sec = ?");
+                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin, nmmodst.mod_stat FROM name INNER JOIN nmmodst ON name.soc_sec = nmmodst.soc_sec WHERE name.soc_sec = ?");
                 $user = $bshpid;
             }
             $stmt->bindParam(1, $user, PDO::PARAM_STR);
@@ -49,18 +49,20 @@ class ssoUser
             if ($affiliation == 'student' || $affiliation == 'faculty') {
                 $userid = $row['soc_sec'];
                 $pinpass = $row['pin'];
+                $level = $row['level'];
             }
             if ($affiliation == 'staff') {
                 $userid = $row['user_id'];
                 $pinpass = $row['password'];
+                $level = 'SF';
             }
-            return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
+            return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass, 'level' => $level);
         }
         return false;
     }
 
     //Check if user has multiple profiles, return true or false
-    public function checkMultiProfiles()
+    public function getFocusProfiles()
     {
         global $pdo, $user;
         $stmt = $pdo->prepare("SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec FROM name INNER JOIN security ON name.soc_sec = security.soc_sec INNER JOIN faculty ON name.soc_sec = faculty.soc_sec WHERE name.ldap_id = ?");
@@ -103,7 +105,7 @@ class ssoUser
     }
 
     //Set modstat for Sonis sign in form
-    public function getModStat()
+    public function getFocusModStat()
     {
         global $affiliation;
         if ($affiliation == 'faculty') {

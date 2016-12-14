@@ -27,19 +27,23 @@ require_once 'config.php';
 require_once './cas/CAS.php';
 include 'lib.php';
 
-// CAS Stuff
+// Enable debugging
 //phpCAS::setDebug();
+
 session_set_cookie_params($client_lifetime, $client_path, $client_domain, $client_secure, $client_httpOnly);
 phpCAS::client(CAS_VERSION_2_0, $cas_host, $cas_port, $cas_context);
+
+// For production use set the CA certificate
 //phpCAS::setCasServerCACert(./CACert.pem);
 phpCAS::setNoCasServerValidation();
+
 if (!phpCAS::isAuthenticated()) {
     phpCAS::forceAuthentication();
 }
-// Focus (User) Attributes
+
 $user = phpCAS::getUser();
 $affiliation = phpCAS::getAttribute('eduPersonAffiliation');
-$bshpid = phpCAS::getAttribute('attribute');
+$bshpid = phpCAS::getAttribute('ATTRIBUTE');
 $focus = new ssoUser();
 
 ?>
@@ -77,10 +81,17 @@ if(isset($_POST['submit'])) {
 }
 //Get user values
 $attributes = $focus->getFocusAttributes();
-$profiles = $focus->checkMultiProfiles();
-$module = $focus->getModStat();
+$profiles = $focus->getFocusProfiles();
+$module = $focus->getFocusModStat();
 
-if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $profiles == false) {
+if (!isset($_POST['submit']) && $attributes['level'] !== 'FA' && $attributes['level'] !== 'SF' && $attributes['level'] !== 'ST') {
+    ?>
+    <div id="notice">
+        <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
+    </div>
+<?php
+}
+else if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $profiles == false) {
     ?>
     <div id="postForm">
         <form action="../cas_login_chk.cfm" method="post" id="preSSO" name="preSSOForm">
@@ -125,6 +136,5 @@ if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $
 <?php
 }
 ?>
-
 </body>
 </html>
