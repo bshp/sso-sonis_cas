@@ -83,58 +83,59 @@ if(isset($_POST['submit'])) {
 $attributes = $focus->getFocusAttributes();
 $profiles = $focus->getFocusProfiles();
 $module = $focus->getFocusModStat();
-$auth= array('FA', 'ADMN', 'ST');
+$auth = array('FA', 'ADMN', 'ST');
 
-if (!isset($_POST['submit']) && (!in_array($module, $auth))) {
+if (!isset($_POST['submitted'])) {
+    if (!in_array($module, $auth)) {
     ?>
-    <div id="notice">
-        <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
-    </div>
-<?php
-}
-else if (!isset($_POST['submit']) && $attributes['status'] == '0' && $attributes && $profiles == false) {
-    ?>
-    <div id="postForm">
-        <form action="../cas_login_chk.cfm" method="post" id="preSSO" name="preSSOForm">
-            <input type="hidden" name="modstat" value="<?PHP echo $module; ?>"/>
-            <input type="hidden" name="PID" value="<?PHP echo $attributes['userid']; ?>"/>
-            <input type="hidden" name="PIN" value="<?PHP echo $attributes['pinpass']; ?>"/>
-            <input type="submit"/>
-        </form>
-    </div>
-    <div id="notice">
-        <p>Please wait while you are signed in......</p>
-    </div>
-    <script type="text/javascript">
-        document.preSSOForm.submit();
-    </script>
-<?php
-} else if (!isset($_POST['submit']) && $attributes['status'] == '1') {
-    ?>
-    <div id="notice">
-        <p>Your account has been locked for your own security, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
-    </div>
-<?php
-} else if (!isset($_POST['submit']) && $profiles == true) {
-    ?>
-    <div id="choices">
-        <div id="multiprofile">
-            <p>You have multiple profiles,<br>Select the profile you wish to login as.</p>
+        <div id="notice">
+            <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
         </div>
-        <div id="choicePostForm">
-            <form action="" method="post" id="profileForm" name="profileForm">
-                <input type="submit" name="submit" value="Faculty">
-                <input type="submit" name="submit" value="Staff">
+    <?php
+    } else if ($attributes['status'] == '0' && $attributes && $profiles == false) {
+        ?>
+        <div id="postForm">
+            <form action="../cas_login_chk.cfm" method="post" id="preSSO" name="preSSOForm">
+                <input type="hidden" name="modstat" value="<?PHP echo $module; ?>"/>
+                <input type="hidden" name="PID" value="<?PHP echo $attributes['userid']; ?>"/>
+                <input type="hidden" name="PIN" value="<?PHP echo $attributes['pinpass']; ?>"/>
+                <input type="submit"/>
             </form>
         </div>
-    </div>
-<?php
-} else {
+        <div id="notice">
+            <p>Please wait while you are signed in......</p>
+        </div>
+        <script type="text/javascript">
+            document.preSSOForm.submit();
+        </script>
+    <?php
+    } else if ($attributes['status'] == '1') {
     ?>
-    <div id="notice">
-        <p>Unable to determine your status, please <a href="https://support.bshp.edu">submit a ticket</a></p>
-    </div>
-<?php
+        <div id="notice">
+            <p>Your account has been locked for your own security, please <a href="https://support.bshp.edu">submit a ticket to have it unlocked.</a></p>
+        </div>
+    <?php
+    } else if ($profiles == true) {
+    ?>
+        <div id="choices">
+            <div id="multiprofile">
+                <p>You have multiple profiles,<br>Select the profile you wish to login as.</p>
+            </div>
+            <div id="choicePostForm">
+                <form action="" method="post" id="profileForm" name="profileForm">
+                    <input type="submit" name="submit" value="Faculty">
+                    <input type="submit" name="submit" value="Staff">
+                </form>
+            </div>
+        </div>
+    <?php
+    } else {
+    ?>
+        <div id="notice">
+            <p>Unable to determine your status, please <a href="https://support.bshp.edu">submit a ticket</a></p>
+        </div>
+    <?php
+    }
 }
 ?>
 </body>
