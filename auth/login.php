@@ -83,8 +83,9 @@ if(isset($_POST['submit'])) {
 $attributes = $focus->getFocusAttributes();
 $profiles = $focus->getFocusProfiles();
 $module = $focus->getFocusModStat();
+$auth= array('FA', 'ADMN', 'ST');
 
-if (!isset($_POST['submit']) && $attributes['level'] !== 'FA' && $attributes['level'] !== 'SF' && $attributes['level'] !== 'ST') {
+if (!isset($_POST['submit']) && (!in_array($module, $auth))) {
     ?>
     <div id="notice">
         <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>

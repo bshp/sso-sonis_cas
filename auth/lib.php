@@ -33,13 +33,13 @@ class ssoUser
         global $pdo, $user, $affiliation, $bshpid;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
             if ($affiliation == 'faculty') {
-                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin, nmmodst.mod_stat FROM name INNER JOIN nmmodst ON name.soc_sec = nmmodst.soc_sec WHERE name.ldap_id = ?");
+                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin FROM name WHERE name.ldap_id = ?");
             }
             if ($affiliation == 'staff') {
                 $stmt = $pdo->prepare("SELECT user_id, disabled, password FROM security WHERE ldap_id = ?");
             }
             if ($affiliation == 'student') {
-                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin, nmmodst.mod_stat FROM name INNER JOIN nmmodst ON name.soc_sec = nmmodst.soc_sec WHERE name.soc_sec = ?");
+                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin FROM name WHERE name.soc_sec = ?");
                 $user = $bshpid;
             }
             $stmt->bindParam(1, $user, PDO::PARAM_STR);
@@ -49,14 +49,12 @@ class ssoUser
             if ($affiliation == 'student' || $affiliation == 'faculty') {
                 $userid = $row['soc_sec'];
                 $pinpass = $row['pin'];
-                $level = $row['level'];
             }
             if ($affiliation == 'staff') {
                 $userid = $row['user_id'];
                 $pinpass = $row['password'];
-                $level = 'SF';
             }
-            return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass, 'level' => $level);
+            return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
         }
         return false;
     }
@@ -115,7 +113,11 @@ class ssoUser
             $modstat = 'ADMN';
         }
         if ($affiliation == 'student') {
-            $modstat = 'ST';
+            $stmt = $pdo->prepare("SELECT mod_stat FROM nmmodst WHERE soc_sec = ?");
+            $stmt->bindParam(1, $bshpid, PDO::PARAM_STR);
+            $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $modtstat = $row['mod_stat'];
         }
         if ($affiliation == '') {
             $modstat = 'mod_error';
