@@ -83,7 +83,7 @@ class ssoUser
         if ($affiliation == 'student') {
             $sql = "SELECT modstat FROM vw_ssoLogin WHERE nmldap = ? ORDER BY modstat DESC";
             $results = $this->executePDO($sql);
-            $level = $results['mod_stat'];
+            $level = $results['modstat'];
         }
         return $level;
     }
