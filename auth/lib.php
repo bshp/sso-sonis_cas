@@ -26,84 +26,91 @@
 //Functions related to the focus account
 class ssoUser
 {
+    //Run query
+    public function executePDO($sql)
+    {
+        global $pdo, $user;
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(1, $user, PDO::PARAM_STR);
+        $stmt->execute();
+        $results = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $results;
+    }
+
     //Check the users affiliation, if valid, return the attributes,
     //if invalid, return false
     public function getFocusAttributes()
     {
-        global $pdo, $user, $affiliation, $bshpid;
+        global $affiliation;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
-            if ($affiliation == 'faculty') {
-                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin FROM name WHERE name.ldap_id = ?");
+            if ($affiliation == 'faculty' || $affiliation == 'student') {
+                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
             }
             if ($affiliation == 'staff') {
-                $stmt = $pdo->prepare("SELECT user_id, disabled, password FROM security WHERE ldap_id = ?");
+                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
             }
-            if ($affiliation == 'student') {
-                $stmt = $pdo->prepare("SELECT name.soc_sec, name.disabled, name.pin FROM name WHERE name.soc_sec = ?");
-                $user = $bshpid;
-            }
-            $stmt->bindParam(1, $user, PDO::PARAM_STR);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $status = $row['disabled'];
-            if ($affiliation == 'student' || $affiliation == 'faculty') {
-                $userid = $row['soc_sec'];
-                $pinpass = $row['pin'];
-            }
-            if ($affiliation == 'staff') {
-                $userid = $row['user_id'];
-                $pinpass = $row['password'];
-            }
+            $results = $this->executePDO($sql);
+            $status = $results['disabled'];
+            $userid = $results['soc_sec'];
+            $pinpass = $results['pin'];
             return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
         }
         return false;
     }
 
     //Check if user has multiple profiles, return true or false
-    public function getFocusProfiles()
+    public function checkMultiProfiles()
     {
-        global $pdo, $user;
-        $stmt = $pdo->prepare("SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec FROM name INNER JOIN security ON name.soc_sec = security.soc_sec INNER JOIN faculty ON name.soc_sec = faculty.soc_sec WHERE name.ldap_id = ?");
-        $stmt->bindParam(1, $user, PDO::PARAM_STR);
-        $stmt->execute();
-        $results = $stmt->fetch(PDO::FETCH_ASSOC);
+        $sql = "SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec FROM name INNER JOIN security ON name.soc_sec = security.soc_sec INNER JOIN faculty ON name.soc_sec = faculty.soc_sec WHERE name.ldap_id = ?";
+        $results = $this->executePDO($sql);
         if ($results['ldap_id'] == $results['sec_id'] && $results) {
             return true;
         }
         return false;
     }
 
+    //Get current level, static for fac/staff, students are checked.
+    //Function getModStat is basically a duplicate and this could replace it.
+    public function getFocusLevel()
+    {
+        global $affiliation;
+        if ($affiliation == 'faculty') {
+            $level = 'FA';
+        }
+        if ($affiliation == 'staff') {
+            $level = 'SF';
+        }
+        if ($affiliation == 'student') {
+            $sql = "SELECT mod_stat FROM nmmodst WHERE soc_sec = ? ORDER BY mod_stat DESC";
+            $results = $this->executePDO($sql);
+            $level = $results['mod_stat'];
+        }
+        return $level;
+    }
+
     //If the user has multiple profiles, return the values for the choice
     //submitted by the user
     public function getFocusChosenAttributes()
     {
-        global $pdo, $user, $modchoice;
+        global $modchoice;
         if ($modchoice == 'FA' || $modchoice == 'ADMN') {
             if ($modchoice == 'FA') {
-                $stmt = $pdo->prepare("SELECT soc_sec, disabled, pin FROM name WHERE ldap_id = ?");
+                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
             }
             if ($modchoice == 'ADMN') {
-                $stmt = $pdo->prepare("SELECT user_id, disabled, password FROM security WHERE ldap_id = ?");
+                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
             }
-            $stmt->bindParam(1, $user, PDO::PARAM_STR);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $status = $row['disabled'];
-            if ($modchoice == 'FA') {
-                $userid = $row['soc_sec'];
-                $pinpass = $row['pin'];
-            }
-            if ($modchoice == 'ADMN') {
-                $userid = $row['user_id'];
-                $pinpass = $row['password'];
-            }
+            $results = $this->executePDO($sql);
+            $status = $results['disabled'];
+            $userid = $results['soc_sec'];
+            $pinpass = $results['pin'];
             return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
         }
         return false;
     }
 
     //Set modstat for Sonis sign in form
-    public function getFocusModStat()
+    public function getModStat()
     {
         global $affiliation;
         if ($affiliation == 'faculty') {
@@ -113,11 +120,7 @@ class ssoUser
             $modstat = 'ADMN';
         }
         if ($affiliation == 'student') {
-            $stmt = $pdo->prepare("SELECT mod_stat FROM nmmodst WHERE soc_sec = ?");
-            $stmt->bindParam(1, $bshpid, PDO::PARAM_STR);
-            $stmt->execute();
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-            $modtstat = $row['mod_stat'];
+            $modstat = 'ST';
         }
         if ($affiliation == '') {
             $modstat = 'mod_error';

@@ -14,23 +14,23 @@
 <cfinvoke component = "CFC.login_chk" method = "login" returnvariable = "getresults">
  <cfinvokeargument name = "sonis_ds" value = '#sonis.ds#'> 	<!--- required, do not edit this value --->
  <cfinvokeargument name = "MainDir" value = '#MainDir#'> 	<!--- required, do not edit this value --->
- <cfinvokeargument name = "PID"  value = '#session.PID#'> 
- <cfinvokeargument name = "PIN"  value = '#session.PIN#'> 
+ <cfinvokeargument name = "PID"  value = '#session.PID#'>
+ <cfinvokeargument name = "PIN"  value = '#session.PIN#'>
  <cfinvokeargument name = "modstat"  value = '#session.modstat#'>
- <cfinvokeargument name = "loginid"  value = '#webopt.loginid#'>  
- <cfinvokeargument name = "key"  value = '#webopt.key_#'>  
- <cfinvokeargument name = "schyr"  value = '#webopt.regyr#'> 
- <cfinvokeargument name = "sem"  value = '#webopt.regsem#'>  
- 
+ <cfinvokeargument name = "loginid"  value = '#webopt.loginid#'>
+ <cfinvokeargument name = "key"  value = '#webopt.key_#'>
+ <cfinvokeargument name = "schyr"  value = '#webopt.regyr#'>
+ <cfinvokeargument name = "sem"  value = '#webopt.regsem#'>
+
 </cfinvoke>
 <CFINCLUDE template="./common/randomizer.cfm">
 <cfset sc=#randnum#>
 <cfset Session.sec_id=#SC#>
 
 <cfif '#getresults#' IS "NOMATCHES" OR '#getresults#' IS "DISABLED">
-				
+
 		<cfif '#getresults#' IS "NOMATCHES">
-			<cfif '#trim(right(cgi.HTTP_REFERER,9))#' eq 'NOMATCHES'>	
+			<cfif '#trim(right(cgi.HTTP_REFERER,9))#' eq 'NOMATCHES'>
                 <cfset session.rtn_url = '#cgi.HTTP_REFERER#'>
             <cfelse>
                 <cfset session.rtn_url = '#cgi.HTTP_REFERER#'&'?m=#getResults#'>
@@ -41,7 +41,7 @@
              <cfelse>
              	<cfset rtn = '#cgi.HTTP_REFERER#'>
 			 </cfif>
-			<cfif '#trim(right(cgi.HTTP_REFERER,8))#' eq 'DISABLED'>	    
+			<cfif '#trim(right(cgi.HTTP_REFERER,8))#' eq 'DISABLED'>
 				<cfset session.rtn_url = '#rtn#'>
             <cfelse>
                 <cfset session.rtn_url = '#rtn#'&'?m=#getResults#'>
@@ -57,30 +57,30 @@
 	<cfif '#session.modstat#' eq 'FA'>
 		<CFINCLUDE template="./common/qry_login_reset_UP.cfm">
 			<cfset session.module = 'FAC'>
+			<cfset session.cur_module = 'faculty'>
+			<cfset client.accessstring = 'H O M E'>
 			<cfset client.loginpage = 'facsect.cfm'>
+			<cfset client.sepcolor = '81b7ff'>
 			<cfset form.pin = '#session.pin#'>
 			<cfset form.pid = '#session.pid#'>
 			<cfset act='LI'>
 			<cfset DESC='Faculty Access LI Succeeded'>
 		<CFINCLUDE template="./common/log.cfm">
-		<div id="casCheckNotice">
-			<p style="font-size:1.5em;" >Going as fast as I can......</p>
-		</div>
 		<cflocation url="facopts.cfm" addtoken="No">
 	</cfif>
 	<!-- Student Login -->
 	<cfif '#session.modstat#' eq 'ST'>
 		<CFINCLUDE template="./common/qry_login_reset_UP.cfm">
 			<cfset session.module = 'STUD'>
+			<cfset session.cur_module = 'student'>
+			<cfset client.accessstring = 'H O M E'>
 			<cfset client.loginpage = 'studsect.cfm'>
+			<cfset client.sepcolor = '81b7ff'>
 			<cfset form.pin = '#session.pin#'>
 			<cfset form.pid = '#session.pid#'>
 			<cfset act='LI'>
 			<cfset DESC='Student Access LI Succeeded'>
 		<CFINCLUDE template="./common/log.cfm">
-		<div id="casCheckNotice">
-			<p style="font-size:1.5em;" >Going as fast as I can......</p>
-		</div>
 		<cflocation url="studhome.cfm" addtoken="No">
 	</cfif>
 	<!-- Staff Login -->
@@ -98,9 +98,6 @@
 			<input type="hidden" name="USER_ID" value="<cfoutput>#form.PID#</cfoutput>">
 			<input type="hidden" name="PASSWORD" value="<cfoutput>#form.PIN#</cfoutput>">
 		</form>
-		<div id="casCheckNotice">
-			<p style="font-size:1.5em;" >Going as fast as I can......</p>
-		</div>
 		<script>
 			document.admnForm.submit();
 		</script>
