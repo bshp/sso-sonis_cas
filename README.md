@@ -14,10 +14,12 @@ LDAP IDs in SonisWeb for Faculty/Staff/Students, can be any other unique id inst
 
 Copy auth folder and cas_login_chk.cfm to your Sonis directory root
 
+You will also need to either modify the sql queries in lib or create a db view with the required fields. See the vw_ssoLogin.sql as an example
+
 Set Database,CAS URL in config.php
 
 Change CACert.pem to match your CAS Certificate CA
 
-Change Login links for Student sections to point to https://sonisweb.example.com/auth
+Change Login links for Faculty, Staff and Student sections to point to https://sonisweb.example.com/auth
 
 You can also set the following IIS Rewrite rules in the rewrite.config file to redirect to CAS immediately, notice we do not want to rewrite if a query string is appended.
