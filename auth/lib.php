@@ -44,11 +44,12 @@ class ssoUser
         global $affiliation;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
             if ($affiliation == 'faculty' || $affiliation == 'student') {
-                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
+                $prefix = 'nm';
             }
             if ($affiliation == 'staff') {
-                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
+                $prefix = 'sec';
             }
+            $sql = "SELECT ".$prefix."id AS soc_sec, ".$prefix."disabled AS disabled, ".$prefix."pin AS pin FROM vw_ssoLogin WHERE ".$prefix."ldap = ?";
             $results = $this->executePDO($sql);
             $status = $results['disabled'];
             $userid = $results['soc_sec'];

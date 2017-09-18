@@ -21,11 +21,19 @@
 ******/
 CREATE VIEW [dbo].[vw_ssoLogin]
 AS
-  SELECT dbo.name.soc_sec AS nmid, RTRIM(dbo.name.first_name) AS firstname, RTRIM(dbo.name.last_name) AS lastname, dbo.name.disabled AS nmdisabled,
-    RTRIM(dbo.name.ldap_id) AS nmldap, RTRIM(CONVERT(char, DECRYPTBYKEYAUTOCERT(CERT_ID('CERTID'), NULL, dbo.name.pin))) AS nmpin,
-    RTRIM(dbo.nmmodst.mod_stat) AS modstat, RTRIM(dbo.security.user_id) AS secid, RTRIM(dbo.security.ldap_id) AS secldap,
-    RTRIM(CONVERT(char, DECRYPTBYKEYAUTOCERT(CERT_ID('CERTID'), NULL, dbo.security.password))) AS secpin, dbo.security.disabled AS secdisabled
+  SELECT dbo.name.soc_sec AS nmid,
+    RTRIM(dbo.name.first_name) AS firstname,
+    RTRIM(dbo.name.last_name) AS lastname,
+    dbo.name.disabled AS nmdisabled,
+    RTRIM(dbo.name.ldap_id) AS nmldap,
+    RTRIM(dbo.nmmodst.mod_stat) AS modstat,
+    RTRIM(CONVERT(char, DECRYPTBYKEYAUTOCERT(CERT_ID('CERTID'), NULL, dbo.name.pin))) AS nmpin,
+    CASE WHEN dbo.faculty.soc_sec = dbo.name.soc_sec THEN '1' ELSE '0' END AS multiprof,
+    RTRIM(dbo.security.user_id) AS secid, RTRIM(dbo.security.ldap_id) AS secldap,
+    RTRIM(CONVERT(char, DECRYPTBYKEYAUTOCERT(CERT_ID('CERTID'), NULL, dbo.security.password))) AS secpin,
+    dbo.security.disabled AS secdisabled
   FROM dbo.name INNER JOIN
     dbo.nmmodst ON dbo.name.soc_sec = dbo.nmmodst.soc_sec LEFT OUTER JOIN
-    dbo.security ON dbo.name.soc_sec = dbo.security.soc_sec
+    dbo.security ON dbo.name.soc_sec = dbo.security.soc_sec LEFT OUTER JOIN
+    dbo.faculty ON dbo.name.soc_sec = dbo.faculty.soc_sec
 GO
