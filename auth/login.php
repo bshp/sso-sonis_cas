@@ -55,18 +55,19 @@ $focus = new ssoUser();
 if(isset($_POST['submit'])) {
     if ($_POST['submit'] == 'Faculty') {
         $modchoice = 'FA';
+        $affiliation = 'faculty';
     }
     if ($_POST['submit'] == 'Staff') {
         $modchoice = 'ADMN';
+        $affiliation = 'staff';
     }
-//set preferred login for multi-role users
-    $prefmodule = $focus->getFocusChosenAttributes();
+    $preferred = $focus->getFocusAttributes();
     ?>
     <div id="postForm">
         <form action="../cas_login_chk.cfm" method="post" id="postSSOForm" name="postSSOForm">
             <input type="hidden" name="modstat" value="<?PHP echo $modchoice; ?>"/>
-            <input type="hidden" name="PID" value="<?PHP echo $prefmodule['userid']; ?>"/>
-            <input type="hidden" name="PIN" value="<?PHP echo $prefmodule['pinpass']; ?>"/>
+            <input type="hidden" name="PID" value="<?PHP echo $preferred['userid']; ?>"/>
+            <input type="hidden" name="PIN" value="<?PHP echo $preferred['pinpass']; ?>"/>
             <input type="submit"/>
         </form>
     </div>

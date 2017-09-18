@@ -44,12 +44,11 @@ class ssoUser
         global $affiliation;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
             if ($affiliation == 'faculty' || $affiliation == 'student') {
-                $prefix = 'nm';
+                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
             }
             if ($affiliation == 'staff') {
-                $prefix = 'sec';
+                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
             }
-            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin FROM vw_ssoLogin WHERE $prefix.ldap = ?";
             $results = $this->executePDO($sql);
             $status = $results['disabled'];
             $userid = $results['soc_sec'];
@@ -87,27 +86,5 @@ class ssoUser
             $level = $results['modstat'];
         }
         return $level;
-    }
-
-    //If the user has multiple profiles, return the values for the choice
-    //submitted by the user
-    public function getFocusChosenAttributes()
-    {
-        global $modchoice;
-        if ($modchoice == 'FA' || $modchoice == 'ADMN') {
-            if ($modchoice == 'FA') {
-                $prefix = 'nm';
-            }
-            if ($modchoice == 'ADMN') {
-                $prefix = 'sec';
-            }
-            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin FROM vw_ssoLogin WHERE $prefix.ldap = ?";
-            $results = $this->executePDO($sql);
-            $status = $results['disabled'];
-            $userid = $results['soc_sec'];
-            $pinpass = $results['pin'];
-            return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
-        }
-        return false;
     }
 }

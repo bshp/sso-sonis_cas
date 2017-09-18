@@ -1,5 +1,3 @@
-<html>
-<body>
 <?php
 //
 //   Copyright 2015 Jason A. Everling
@@ -36,5 +34,3 @@ phpCAS::logoutWithRedirectService($backurl);
 
 exit();
 ?>
-</body>
-</html>
