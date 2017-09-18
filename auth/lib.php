@@ -44,11 +44,12 @@ class ssoUser
         global $affiliation;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
             if ($affiliation == 'faculty' || $affiliation == 'student') {
-                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
+                $prefix = 'nm';
             }
             if ($affiliation == 'staff') {
-                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
+                $prefix = 'sec';
             }
+            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin, modtstat FROM vw_ssoLogin WHERE $prefix.ldap = ?";
             $results = $this->executePDO($sql);
             $status = $results['disabled'];
             $userid = $results['soc_sec'];
@@ -78,7 +79,7 @@ class ssoUser
             $level = 'FA';
         }
         if ($affiliation == 'staff') {
-            $level = 'SF';
+            $level = 'ADMN';
         }
         if ($affiliation == 'student') {
             $sql = "SELECT modstat FROM vw_ssoLogin WHERE nmldap = ? ORDER BY modstat DESC";
@@ -95,11 +96,12 @@ class ssoUser
         global $modchoice;
         if ($modchoice == 'FA' || $modchoice == 'ADMN') {
             if ($modchoice == 'FA') {
-                $sql = "SELECT nmid AS soc_sec, nmdisabled AS disabled, nmpin AS pin FROM vw_ssoLogin WHERE nmldap = ?";
+                $prefix = 'nm';
             }
             if ($modchoice == 'ADMN') {
-                $sql = "SELECT secid AS soc_sec, secdisabled AS disabled, secpin AS pin FROM vw_ssoLogin WHERE secldap = ?";
+                $prefix = 'sec';
             }
+            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin FROM vw_ssoLogin WHERE $prefix.ldap = ?";
             $results = $this->executePDO($sql);
             $status = $results['disabled'];
             $userid = $results['soc_sec'];
@@ -107,24 +109,5 @@ class ssoUser
             return array('userid' => $userid, 'status' => $status, 'pinpass' => $pinpass);
         }
         return false;
-    }
-
-    //Set modstat for Sonis sign in form
-    public function getModStat()
-    {
-        global $affiliation;
-        if ($affiliation == 'faculty') {
-            $modstat = 'FA';
-        }
-        if ($affiliation == 'staff') {
-            $modstat = 'ADMN';
-        }
-        if ($affiliation == 'student') {
-            $modstat = 'ST';
-        }
-        if ($affiliation == '') {
-            $modstat = 'mod_error';
-        }
-        return $modstat;
     }
 }

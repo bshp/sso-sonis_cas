@@ -78,10 +78,10 @@ if(isset($_POST['submit'])) {
 //Get user values
 $attributes = $focus->getFocusAttributes();
 $profiles = $focus->checkMultiProfiles();
-$module = $focus->getModStat();
-$auth= array('FA', 'SF', 'ST');
+$module = $focus->getFocusLevel();
+$auth= array('FA', 'ADMN', 'ST');
 
-if (!isset($_POST['submit']) && (!in_array($focus->getFocusLevel(), $auth))) {
+if (!isset($_POST['submit']) && (!in_array($module, $auth))) {
     ?>
     <div id="notice">
         <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
