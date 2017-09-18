@@ -49,7 +49,7 @@ class ssoUser
             if ($affiliation == 'staff') {
                 $prefix = 'sec';
             }
-            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin, modtstat FROM vw_ssoLogin WHERE $prefix.ldap = ?";
+            $sql = "SELECT $prefix.id AS soc_sec, $prefix.disabled AS disabled, $prefix.pin AS pin FROM vw_ssoLogin WHERE $prefix.ldap = ?";
             $results = $this->executePDO($sql);
             $status = $results['disabled'];
             $userid = $results['soc_sec'];
