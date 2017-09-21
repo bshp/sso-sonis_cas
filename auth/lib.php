@@ -37,12 +37,35 @@ class ssoUser
         return $results;
     }
 
+    public function getFocusAffiliation()
+    {
+        global $user;
+        if (!empty($user)) {
+            $sql = "SELECT modstat FROM vw_ssoLogin WHERE nmldap = ?";
+            $results = $this->executePDO($sql);
+            $modstat = $results['modstat'];
+            $affiliation = '';
+            if ($modstat == 'FA') {
+                $affiliation = 'faculty';
+            }
+            if ($modstat == 'SF') {
+                $affiliation = 'staff';
+            }
+            if ($modstat == 'ST') {
+                $affiliation = 'student';
+            }
+            return $affiliation;
+        }
+        return false;
+    }
+
     //Check the users affiliation, if valid, return the attributes,
     //if invalid, return false
     public function getFocusAttributes()
     {
         global $affiliation;
         if ($affiliation == 'student' || $affiliation == 'faculty' || $affiliation == 'staff') {
+            $prefix = '';
             if ($affiliation == 'faculty' || $affiliation == 'student') {
                 $prefix = 'nm';
             }
@@ -62,9 +85,11 @@ class ssoUser
     //Check if user has multiple profiles, return true or false
     public function checkMultiProfiles()
     {
-        $sql = "SELECT name.ldap_id, security.ldap_id AS sec_id, faculty.soc_sec FROM name INNER JOIN security ON name.soc_sec = security.soc_sec INNER JOIN faculty ON name.soc_sec = faculty.soc_sec WHERE name.ldap_id = ?";
+        $sql = "SELECT multiprof, modstat FROM vw_ssoLogin WHERE nmldap = ?";
         $results = $this->executePDO($sql);
-        if ($results['ldap_id'] == $results['sec_id'] && $results) {
+        $multi = $results['multiprof'];
+        $profs = $results['modstat'];
+        if ($multi == '1' && $profs == 'FA' || $multi == '1' && $profs == 'SF') {
             return true;
         }
         return false;
@@ -75,6 +100,7 @@ class ssoUser
     public function getFocusLevel()
     {
         global $affiliation;
+        $level = '';
         if ($affiliation == 'faculty') {
             $level = 'FA';
         }

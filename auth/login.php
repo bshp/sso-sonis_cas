@@ -42,7 +42,6 @@ if (!phpCAS::isAuthenticated()) {
 }
 
 $user = phpCAS::getUser();
-$affiliation = phpCAS::getAttribute('eduPersonAffiliation');
 $focus = new ssoUser();
 
 ?>
@@ -77,12 +76,13 @@ if(isset($_POST['submit'])) {
 <?php
 }
 //Get user values
+$affiliation = $focus->getFocusAffiliation();
 $attributes = $focus->getFocusAttributes();
 $profiles = $focus->checkMultiProfiles();
 $module = $focus->getFocusLevel();
-$auth= array('FA', 'ADMN', 'ST');
+$auth= array('faculty', 'staff', 'student');
 
-if (!isset($_POST['submit']) && (!in_array($module, $auth))) {
+if (!isset($_POST['submit']) && (!in_array($affiliation, $auth))) {
     ?>
     <div id="notice">
         <p>Your account does not yet include Sonis access. Students, contact the registrar's office. Faculty or Staff, contact the IS Department</p>
