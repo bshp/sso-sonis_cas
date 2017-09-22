@@ -23,10 +23,18 @@
 //    Email: jeverling@bshp.edu
 //
 
-//Functions related to the focus account
+
+/**
+ * Class ssoUser
+ * Functions related to the user(focus)
+ */
 class ssoUser
 {
-    //Run query
+
+    /**
+     * @param string $sql The sql query to be run, user as lookup value
+     * @return mixed Returns the query results.
+     */
     public function executePDO($sql)
     {
         global $pdo, $user;
@@ -37,11 +45,16 @@ class ssoUser
         return $results;
     }
 
+    /**
+     * @return bool|string
+     * Returns false if no $user value, returns $affiliation if found
+     * Only call this once as other functions might set a new value.
+     */
     public function getFocusAffiliation()
     {
         global $user;
         if (!empty($user)) {
-            $sql = "SELECT modstat FROM vw_ssoLogin WHERE nmldap = ?";
+            $sql = "SELECT TOP 1 modstat FROM vw_ssoLogin WHERE nmldap = ? ORDER BY modstat DESC";
             $results = $this->executePDO($sql);
             $modstat = $results['modstat'];
             $affiliation = '';
@@ -59,8 +72,11 @@ class ssoUser
         return false;
     }
 
-    //Check the users affiliation, if valid, return the attributes,
-    //if invalid, return false
+
+    /**
+     * @return array|bool Returns false if not currently affiliated, array otherwise
+     * @array array Returns array of attribute value pairs.
+     */
     public function getFocusAttributes()
     {
         global $affiliation;
@@ -82,7 +98,12 @@ class ssoUser
         return false;
     }
 
-    //Check if user has multiple profiles, return true or false
+
+    /**
+     * @return bool True or False if user has multiple profiles
+     * If user has multiple profiles then True otherwise False
+     * To prevent false positives, user must also have FA or SF modstat.
+     */
     public function checkMultiProfiles()
     {
         $sql = "SELECT multiprof, modstat FROM vw_ssoLogin WHERE nmldap = ?";
@@ -95,8 +116,12 @@ class ssoUser
         return false;
     }
 
-    //Get current level, static for fac/staff, students are checked.
-    //Function getModStat is basically a duplicate and this could replace it.
+
+    /**
+     * @return string Returns a single current level from Sonis,
+     * ST will always come first over OA or AL status,
+     * Students can apply to other programs during enrollment.
+     */
     public function getFocusLevel()
     {
         global $affiliation;
@@ -108,7 +133,7 @@ class ssoUser
             $level = 'ADMN';
         }
         if ($affiliation == 'student') {
-            $sql = "SELECT modstat FROM vw_ssoLogin WHERE nmldap = ? ORDER BY modstat DESC";
+            $sql = "SELECT TOP 1 modstat FROM vw_ssoLogin WHERE nmldap = ? ORDER BY modstat DESC";
             $results = $this->executePDO($sql);
             $level = $results['modstat'];
         }
