@@ -1,4 +1,7 @@
 # CAS Auth for SonisWeb
+## This is no longer maintained, code has been migrated to Coldfusion,   
+https://github.com/bshp/sso-sonis_cas_cfm   
+## PHP README below
 Use CAS SSO for Faculty/Staff and Students in SonisWeb
 
 This project was created to support SSO functionality in SonisWeb without modification to any directory or database. This is meant to be a starting point so that you can get an idea of how easily you could connect an SSO system to Sonis.
